@@ -2,11 +2,12 @@ package com.cqjysoft.webservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cqjysoft.modules.entity.role.User;
 import com.cqjysoft.modules.entity.system.Menu;
 import com.cqjysoft.modules.repository.system.MenuRepository;
 

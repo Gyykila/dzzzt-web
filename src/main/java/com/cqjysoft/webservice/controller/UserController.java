@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cqjysoft.common.aop.Ignore;
 import com.cqjysoft.common.security.K3PasswordParse;
 import com.cqjysoft.modules.entity.role.Role;
 import com.cqjysoft.modules.entity.role.User;
 import com.cqjysoft.modules.entity.system.Menu;
 import com.cqjysoft.modules.repository.role.RoleRepository;
 import com.cqjysoft.modules.repository.role.UserRepository;
-import com.cqjysoft.modules.repository.system.MenuRepository;
 import com.cqjysoft.webservice.dto.RoleMenus;
 import com.cqjysoft.webservice.service.SystemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +42,7 @@ public class UserController {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
+	@Ignore
     @RequestMapping(value="/login",method=RequestMethod.POST)
     @ResponseBody
     public String login(String params) throws ParseException, IOException {
@@ -84,11 +85,12 @@ public class UserController {
      * @throws ParseException
      * @throws IOException
      */
+	@Ignore
     @RequestMapping(value="/autologin",method=RequestMethod.POST)
     @ResponseBody
-    public String autologin(String data) throws ParseException, IOException {
+    public String autologin(String params) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
-		User user = mapper.readValue(data, User.class);
+		User user = mapper.readValue(params, User.class);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(user!=null) {
 			User realUser = userRepository.findByUsername(user.getUsername());
@@ -126,7 +128,7 @@ public class UserController {
 	 */
     @RequestMapping(value="/listrolemenus",method=RequestMethod.POST)
     @ResponseBody
-    public String listrolemenus(String params) throws ParseException, IOException {
+    public String listrolemenus(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		RoleMenus roleMenus = mapper.readValue(params, RoleMenus.class);
@@ -155,7 +157,6 @@ public class UserController {
 						}
 					}
 				}
-				
 				map.put("data", menus);
 				map.put("code", "SUCCESS");
 	    		map.put("msg", "获取用户菜单成功");
@@ -179,7 +180,7 @@ public class UserController {
      */
     @RequestMapping(value="/listrole",method=RequestMethod.POST)
     @ResponseBody
-    public String listrole(String data) throws ParseException, IOException {
+    public String listrole(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Role> roles = roleRepository.findAll();
@@ -222,7 +223,7 @@ public class UserController {
 	 */
     @RequestMapping(value="/saverolemenus",method=RequestMethod.POST)
     @ResponseBody
-    public String saverolemenus(String params) throws ParseException, IOException {
+    public String saverolemenus(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		RoleMenus roleMenus = mapper.readValue(params, RoleMenus.class);

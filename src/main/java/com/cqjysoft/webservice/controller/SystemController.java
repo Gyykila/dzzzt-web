@@ -32,7 +32,7 @@ public class SystemController {
 	 */
     @RequestMapping(value="/listtreemenu",method=RequestMethod.POST)
     @ResponseBody
-    public String listmenu() throws ParseException, IOException {
+    public String listtreemenu(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Menu> menus = systemService.getAllMenus();
@@ -45,7 +45,7 @@ public class SystemController {
     @SuppressWarnings("unchecked")
     @RequestMapping(value="/savemenus",method=RequestMethod.POST)
     @ResponseBody
-    public String savemenus(String params) throws ParseException, IOException {
+    public String savemenus(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		menusDto dto = mapper.readValue(params, menusDto.class);
@@ -64,7 +64,7 @@ public class SystemController {
 	 */
     @RequestMapping(value="/listmenu",method=RequestMethod.POST)
     @ResponseBody
-    public String listrole() throws ParseException, IOException {
+    public String listrole(String params,String token) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Menu> menus = systemService.list();

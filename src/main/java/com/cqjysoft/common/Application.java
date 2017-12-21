@@ -10,16 +10,17 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan({"com.cqjysoft"})
 @EntityScan("com.cqjysoft")
 @EnableJpaRepositories("com.cqjysoft")
-@EnableScheduling
+//@EnableScheduling 定时任务注解
+//@EnableCaching
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
     public static void main(String[] args){
         SpringApplication.run(Application.class,args);
