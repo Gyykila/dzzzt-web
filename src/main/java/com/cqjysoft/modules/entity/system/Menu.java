@@ -23,7 +23,6 @@ public class Menu implements Serializable{
 	 * id
 	 */
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="FID")
 	private Long id;
 	

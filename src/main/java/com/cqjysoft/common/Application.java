@@ -2,6 +2,8 @@ package com.cqjysoft.common;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -9,8 +11,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
@@ -19,8 +22,6 @@ import org.springframework.http.HttpStatus;
 @ComponentScan({"com.cqjysoft"})
 @EntityScan("com.cqjysoft")
 @EnableJpaRepositories("com.cqjysoft")
-//@EnableScheduling 定时任务注解
-//@EnableCaching
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
     public static void main(String[] args){
         SpringApplication.run(Application.class,args);
@@ -31,6 +32,13 @@ public class Application extends SpringBootServletInitializer implements Embedde
 		container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,"/404.html"));
 		container.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR,"/500.html"));
         container.setSessionTimeout(10, TimeUnit.MINUTES);
+	}
+	 @Bean
+	 MultipartConfigElement multipartConfigElement() {
+	    MultipartConfigFactory factory = new MultipartConfigFactory();
+	    factory.setMaxFileSize("10MB");
+	    factory.setLocation("D:\\temp");
+	    return factory.createMultipartConfig();
 	}
 	//maven-war-plugin
 	@Override

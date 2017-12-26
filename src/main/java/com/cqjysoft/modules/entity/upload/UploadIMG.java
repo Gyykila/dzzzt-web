@@ -26,18 +26,25 @@ public class UploadIMG{
 	//图片点赞数
 	private int up;
 	private String imgURL;
+	private String imgORIURL;
 	private String imgSLURL;
 	
-	public UploadIMG(String saveName, Date upload, Date date, String savePath, String sLpath) {
-		this.name = saveName;
+	private boolean hidden;
+	
+	public UploadIMG() {
+	}
+	
+	public UploadIMG(String oriName, Date upload, Date date, String savePath, String sLpath,String path) {
+		this.name = oriName;
 		this.uploadDate = upload;
 		this.imgDate = date;
-		this.imgURL = savePath;
+		this.imgORIURL = savePath;
 		this.imgSLURL = sLpath;
+		this.imgURL = path;
+		this.hidden = false;
 	}
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="FID")
 	public Long getId() {
 		return id;
@@ -109,6 +116,23 @@ public class UploadIMG{
 	}
 	public void setImgSLURL(String imgSLURL) {
 		this.imgSLURL = imgSLURL;
+	}
+
+	@Column(name = "FHidden")
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+	@Column(name = "FImgORIURL")
+	public String getImgORIURL() {
+		return imgORIURL;
+	}
+
+	public void setImgORIURL(String imgORIURL) {
+		this.imgORIURL = imgORIURL;
 	}
 }
 
