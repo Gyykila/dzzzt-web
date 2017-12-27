@@ -18,8 +18,10 @@ import com.cqjysoft.common.aop.Ignore;
 import com.cqjysoft.common.security.K3PasswordParse;
 import com.cqjysoft.modules.entity.role.Role;
 import com.cqjysoft.modules.entity.role.User;
+import com.cqjysoft.modules.entity.role.UserDetail;
 import com.cqjysoft.modules.entity.system.Menu;
 import com.cqjysoft.modules.repository.role.RoleRepository;
+import com.cqjysoft.modules.repository.role.UserDetailRepository;
 import com.cqjysoft.modules.repository.role.UserRepository;
 import com.cqjysoft.webservice.dto.RoleMenus;
 import com.cqjysoft.webservice.service.SystemService;
@@ -30,6 +32,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UserController {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserDetailRepository userDetailRepository;
 	@Autowired
 	private RoleRepository roleRepository;
 	@Autowired
@@ -47,22 +51,33 @@ public class UserController {
     @ResponseBody
     public String login(String params) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
-		User user = mapper.readValue(params, User.class);
+    	UserDetail userDetail = mapper.readValue(params, UserDetail.class);
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(user!=null) {
-			User realUser = userRepository.findByUsername(user.getUsername());
+		if(userDetail!=null) {
+			User realUser = userRepository.findByUsername(userDetail.getUsername());
 			if(realUser!=null) {
-				if(K3PasswordParse.validatePassword(user.getPassword(), realUser.getPassword())){
+				if(K3PasswordParse.validate(userDetail.getPassword(), realUser.getPassword())){
 					map.put("code", "SUCCESS");
 					map.put("msg", "用户验证成功");
 					String token = UUID.randomUUID().toString();
-					realUser.setToken(token);
+					
+					UserDetail detail = null;
+					if(!userDetailRepository.exists(realUser.getId())) {
+						detail = new UserDetail();
+						detail.setId(realUser.getId());
+						detail.setUsername(realUser.getUsername());
+						detail.setToken(token);
+					}else {
+						detail = userDetailRepository.getOne(realUser.getId());
+					}
+					detail.setToken(token);
+					userDetailRepository.save(detail);
+					
 					userRepository.save(realUser);
-					user.setToken(token);
-					user.setRoles(null);
-					user.setPassword(null);
-					user.setId(realUser.getId());
-					map.put("data", user);
+					userDetail.setToken(token);
+					userDetail.setPassword(null);
+					userDetail.setId(realUser.getId());
+					map.put("data", userDetail);
 				}else {
 					map.put("code", "ERROR");
 		    		map.put("msg", "密码不正确");
@@ -90,28 +105,10 @@ public class UserController {
     @ResponseBody
     public String autologin(String params) throws ParseException, IOException {
     	ObjectMapper mapper = new ObjectMapper();
-		User user = mapper.readValue(params, User.class);
+    	UserDetail userDetail = mapper.readValue(params, UserDetail.class);
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(user!=null) {
-			User realUser = userRepository.findByUsername(user.getUsername());
-			if(realUser!=null) {
-				if(realUser.getToken().equals(user.getToken())){
-					map.put("code", "SUCCESS");
-					map.put("msg", "用户验证成功");
-					String token = UUID.randomUUID().toString();
-					realUser.setToken(token);
-					userRepository.save(realUser);
-					user.setId(realUser.getId());
-					user.setToken(token);
-					map.put("data", user);
-				}else {
-					map.put("code", "ERROR");
-		    		map.put("msg", "token验证失败");
-				}
-			}else {
-				map.put("code", "ERROR");
-	    		map.put("msg", "用户不存在");
-			}
+		if(userDetail!=null) {
+			
     	}else {
     		map.put("code", "ERROR");
     		map.put("msg", "上传参数不正确");
@@ -135,7 +132,8 @@ public class UserController {
 		if(roleMenus.getRoleId()!=null) {
 			User user = userRepository.getOne(roleMenus.getRoleId());
 			if(user!=null) {
-				List<Role> roles = user.getRoles();
+				UserDetail userDetail = userDetailRepository.getOne(user.getId());
+				List<Role> roles = userDetail.getRoles();
 				List<Long> rolsId = new ArrayList<>();
 				for (Role role : roles) {
 					for (Menu rolmenu : role.getMenus()) {

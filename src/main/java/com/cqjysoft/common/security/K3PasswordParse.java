@@ -103,35 +103,42 @@ public class K3PasswordParse {
 		put("<",new String[]{" \\ ","#P ","/ "," \\ ","#P ","/ "});
 		put(">",new String[]{" ^ ","#X ","/@"," ^ ","#X ","/@"});
 		}};
-	private static String parse(String password){
-		String newPassword = StringUtils.EMPTY;
-		char[] strChar = password.toCharArray();
-		for(int i = 0 ;i<strChar.length;i++){
-			String[] b = map.get("" +strChar[i]);
-			String c = b[i%6];
-			newPassword += c;
+		public static String parse(String password){
+			String newPassword = StringUtils.EMPTY;
+			char[] strChar = password.toCharArray();
+			for(int i = 0 ;i<strChar.length;i++){
+				String[] b = map.get("" +strChar[i]);
+				String c = b[i%6];
+				newPassword += c;
+			}
+			return newPassword;
 		}
-		return newPassword;
-	}
-	/**
-	 * 生成安全的密码，生成随机的16位salt并经过1024次 sha-1 hash
-	 */
-	public static String entryptPassword(String plainPassword) {
-		return ")  F \", ,P T #8 *P!D &D 80!N &@ <0 C \'< : !M &4 )0"+ K3PasswordParse.parse(plainPassword);
-	}
+		public static String entryptPassword(String plainPassword) {
+			/*
+			 * byte[] salt = Digests.generateSalt(SALT_SIZE); byte[] hashPassword =
+			 * Digests.sha1(plainPassword.getBytes(), salt, HASH_INTERATIONS);
+			 * return Encodes.encodeHex(salt)+Encodes.encodeHex(hashPassword);
+			 */
+			return ")  F \", ,P T #8 *P!D &D 80!N &@ <0 C \'< : !M &4 )0"
+					+ K3PasswordParse.parse(plainPassword);
+		}
 	/**
 	 * 验证密码
 	 * @param plainPassword 明文密码
 	 * @param password 密文密码
 	 * @return 验证成功返回true
 	 */
-	public static boolean validatePassword(String plainPassword, String password) {
-		plainPassword=parse(plainPassword).replace(" ", "");
-		password = password.substring(password.indexOf(")0")+2,password.length());
-		password = password.replace(" ", "");
-		return plainPassword.equals(password);
-	}
-	public static void main(String[] args) {
-		System.out.println(K3PasswordParse.entryptPassword("123456"));
+	public static boolean validate(String plaintext,String ciphertext){
+		String newPassword = StringUtils.EMPTY;
+		char[] strChar = plaintext.toCharArray();
+		String[] b = null;
+		for(int i = 0 ;i<strChar.length;i++){
+			b = map.get("" +strChar[i]);
+			String c = b[i%6];
+			newPassword += c;
+		}
+		int n = ciphertext.indexOf(")0");
+		String a = ciphertext.substring(n+2,ciphertext.length());
+		return newPassword.equals(a);
 	}
 }

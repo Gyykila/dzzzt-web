@@ -31,7 +31,6 @@ public class Role{
 	private List<Menu> menus = new ArrayList<Menu>();
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="FID")
 	public Long getId() {
 		return id;

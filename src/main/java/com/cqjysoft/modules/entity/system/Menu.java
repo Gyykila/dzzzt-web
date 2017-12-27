@@ -80,10 +80,6 @@ public class Menu implements Serializable{
 	public void setIconCls(String iconCls) {
 		this.iconCls = iconCls;
 	}
-	
-	public List<Menu> children() {
-		return children;
-	}
 
 	public void setChildren(List<Menu> children) {
 		this.children = children;
