@@ -12,6 +12,7 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 
 @SpringBootApplication
 @ComponentScan({"com.cqjysoft"})
+@ServletComponentScan
 @EntityScan("com.cqjysoft")
 @EnableJpaRepositories("com.cqjysoft")
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer{
@@ -33,8 +35,8 @@ public class Application extends SpringBootServletInitializer implements Embedde
 		container.addErrorPages(new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR,"/500.html"));
         container.setSessionTimeout(10, TimeUnit.MINUTES);
 	}
-	 @Bean
-	 MultipartConfigElement multipartConfigElement() {
+	@Bean
+	MultipartConfigElement multipartConfigElement() {
 	    MultipartConfigFactory factory = new MultipartConfigFactory();
 	    factory.setMaxFileSize("10MB");
 	    factory.setLocation("D:\\temp");

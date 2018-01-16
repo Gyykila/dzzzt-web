@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "JBOS_UploadIMG")
 public class UploadIMG{
@@ -45,6 +47,8 @@ public class UploadIMG{
 	}
 	
 	@Id
+	@GeneratedValue(generator = "persistencegenerator")
+	@GenericGenerator(name = "persistencegenerator", strategy = "increment")
 	@Column(name="FID")
 	public Long getId() {
 		return id;
